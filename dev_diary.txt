@@ -1,0 +1,14 @@
+Jun/27
+-Scaffold porject with npm create vite@latest
+-Enable Github copilot
+-Watch some videos about the postgresql explain analyze command and try to understand it better
+-Implement bullet proof react file structure, see https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md 
+- Asked ChatGPT "Create a simple UI in react with a text area to paste in a string and a button to submit the string in the text area for validation. Ask me 5 clarifying questions before writing the components"
+- follow ups 
+    --"Not yet, could you make it so that after the user submits an improperly formatted, they see the error message, and start typing or do control x to clear the text area that the error message is no longer displayed?"
+    --"1. JSON format validation
+2. For more context the string should be the output of a a EXPLAIN ANALYZE command on a given postgresql query. After the string is validated there will be a visualization of the output in order to make it clearer to the user what that explain statement means. So, there will be an output area that is to be determined as far as specifics go. 
+3. Only on a submit 
+4. Definitely no store like Redux, maybe an external state, since another componet will need to rely on the parsed text
+5. Plain CSS, maybe even CSS modules"
+
