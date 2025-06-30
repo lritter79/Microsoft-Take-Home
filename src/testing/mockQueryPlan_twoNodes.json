@@ -1,0 +1,44 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Sort",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 61.98,
+      "Total Cost": 64.11,
+      "Plan Rows": 850,
+      "Plan Width": 68,
+      "Actual Startup Time": 0.031,
+      "Actual Total Time": 0.036,
+      "Actual Rows": 3,
+      "Actual Loops": 1,
+      "Sort Key": ["dept", "name"],
+      "Sort Method": "quicksort",
+      "Sort Space Used": 25,
+      "Sort Space Type": "Memory",
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Relation Name": "employee",
+          "Alias": "employee",
+          "Startup Cost": 0.0,
+          "Total Cost": 20.62,
+          "Plan Rows": 850,
+          "Plan Width": 68,
+          "Actual Startup Time": 0.007,
+          "Actual Total Time": 0.01,
+          "Actual Rows": 3,
+          "Actual Loops": 1,
+          "Filter": "(name ~~ '%a%'::text)",
+          "Rows Removed by Filter": 0
+        }
+      ]
+    },
+    "Planning Time": 3.154,
+    "Triggers": [],
+    "Execution Time": 0.054
+  }
+]

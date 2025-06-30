@@ -12,3 +12,37 @@ Jun/27
 4. Definitely no store like Redux, maybe an external state, since another componet will need to rely on the parsed text
 5. Plain CSS, maybe even CSS modules"
 
+Jun/28
+-Spent day studying what the output of EXPLAIN ANALYZE does
+-Idea for visualization is a tree structure with a leaves from a root node, since the JSON is a tree structure
+-Found a SQL sandbox https://onecompiler.com/postgresql/43p6erts3, used it to make some dummy data for testing
+-Learned that the "triggers" property on the json is for db triggers that run on a given SQL script in the EXPLAIN statement
+-Watched this lecture to understnad what the command does:https://www.youtube.com/watch?v=Kdjz2e8HYPU&t=4s&ab_channel=PostgresConfSouthAfrica
+notes
+EXPLAIN ANALYZE executes a SQL statmeent and returns query plan 
+THe is what SQ
+index only scan like index scan, but they get all their column infomation from that indexL did under the hood
+This visualizer is really good https://tatiyants.com/pev/#/plans 
+Postgres build a tree strucutre nodes representing actions taken
+scans are the moethods postgees uses to soft through and access data being reuqsted
+sequential scan iterates through table 1 row at a time, most common basic scan 
+Index scan only reads portion of data relevant to query
+Bitmap index scan combines indexes uses 1st index to locate rows that satisfy 1st filter then next to satisfy 2nd and so on
+
+Bit map heap scan fetches rows from the table in the physical orde they are in
+used when we would read too much for index scan, to little for sequential
+down side is sequential order in on disk so you lose sorting
+Nested loop iterated through all entries in table 1 and table 2, and so on
+Hash joins creare hash table in memory with filtered table results
+
+Merge joins are like hash join but dont fit into memory
+sorts
+external merge sort used when the data does not fit into memory, fastest sort moethods
+qucick sort used for in memory sorting 
+heap sort mainstains a head iwth a bounded size the swallows the input vlaues in sequence and sorts where it fits into the heap
+Times 
+estimated time a caculated use database statistics
+time of upper level node inclused the times of of all its child nodes
+NB the cost does not consider time spent transmitting result rows to the client 
+
+width of a row is the sum of all the bytes of all the columns

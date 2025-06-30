@@ -1,0 +1,95 @@
+import type { Operation } from "../types/operation";
+
+// Auto-generated operation descriptions from pgMustard
+export const pgMustardOperationDescriptions: Record<
+  Operation,
+  string
+> = {
+  "Seq Scan":
+    "A Seq Scan (or Sequential Scan) reads in rows from a table, page by page, in the order they happen to be in on disk.\nSequential scans can be a fast way of getting data from a small table, and the fastest way of getting a high proportion of rows from larger tables.\nHowever, fetching a small proportion of rows from a large table is normally far more efficient via an index.\nFrom PostgreSQL 9.6 onwards, sequential scans can run in parallel, which you’ll see as a\nParallel Seq Scan\noperation in text format query plans.",
+  "Index Scan":
+    "Scans an index for rows which match a particular condition, then reads them from the table.\nAn index scan is very efficient if you only need a small proportion of the rows, and can also really help if you want the rows in a particular order.\nYou will see them in query plans as a result of rows being removed by a WHERE clause or rows being looked up one at a time due to a JOIN statement.\nThe two-step nature of the process will make it slower than a sequential scan if you need all the rows in no particular order, and almost always slower than an index-only scan when that is possible.",
+  "Index-Only Scan":
+    "When all the information needed is contained in the index, an index-only scan can read the data from the index, without referring to the table.\nNaturally, this can be very fast.\nHowever, if any data in the table page has changed recently (since the last vacuum), Postgres needs to check whether the row is visible to the query’s transaction, and that information is on the heap not in the index. You will see these as\nheap fetches\nin the query plan.\nAlso watch out for\nrows removed by filter\n, which are a per-loop average, and can be a sign that the index definition isn’t optimal for the query.",
+  "Nested Loop":
+    "Nested Loop is a simple join algorithm. The first child node is run once, then for each row it produces matching rows are looked up in the second child node.\nFor example, the child nodes might be a Seq Scan on a tiny table and an Index Only Scan on a larger table. In this case, the Seq Scan would run once, and each row it produced would cause a loop of the Index Only Scan.\nThe Nested Loop algorithm is cheap to start, but gets more expensive as the number of loops increases. As such, it is often chosen when Postgres estimates that one of the relations is small. If it is chosen in spite of this, then it might be the only option available (due to the join condition).",
+  "Hash Join":
+    "An implementation of join in which one of the collections of rows to be joined is hashed on the join keys using a separate 'Hash' node.\nPostgres then iterates over the other collection of rows, for each one looking it up in the hash table to see if there are any rows it should be joined to.",
+  "Merge Join":
+    "An implementation of join which is possible when the two lists of rows to be joined are already sorted on their join keys.\nIn a similar way to a merge sort, Postgres traverses the two lists in order, finding any pairs in which the join keys are identical and returning them as a new, joined row.",
+  Aggregate:
+    "Combines rows together to produce result(s).\nThis can be a combination of GROUP BY, UNION or SELECT DISTINCT clauses, and/or functions like COUNT, MAX or SUM.\nPerforming COUNT operations in Postgres can be quite slow relative to other databases, due to trade-offs with its data consistency method (MVCC). Where possible, estimating or pre-calculating the total number of rows is often much faster.",
+  Append:
+    "Combine the results of the child operations.\nThis can be the result of an explicit UNION ALL statement, or the need for a parent operation to consume the results of two or more children together.",
+  "Bitmap Heap Scan":
+    "Bitmap scans are a multi-step process that consist of a Bitmap Heap Scan, one or more Bitmap Index Scans and optionally BitmapOr and BitmapAnd operations.\nThe Bitmap Heap Scan reads pages from a bitmap created by the other operations, filtering out any rows that don't match the condition.\nThis has the advantage that the pages can be read in order, like in a sequential scan, avoiding random I/O and hopefully thus making the reads faster.\nIt also means that, like in an index scan, only some pages need to be read rather than all of them.\nIf the bitmap does not fit in memory, defined by\nwork_mem\n, Postgres will make some blocks\nlossy\n.",
+  "Bitmap Index Scan":
+    "Bitmap scans are a multi-step process that consist of a Bitmap Heap Scan, one or more Bitmap Index Scans and optionally BitmapOr and BitmapAnd operations.\nA Bitmap Index Scan is the first step, using an index to create a bitmap of rows that may* fulfil (at least part of) the condition.\nIf the bitmap does not fit in memory, defined by\nwork_mem\n, Postgres will make some blocks\nlossy\n, but this is shown on the Bitmap Heap Scan.\n*Some index types, like BRIN, don't guarantee it.",
+  BitmapAnd:
+    "Bitmap scans are a multi-step process that consist of a Bitmap Heap Scan, one or more Bitmap Index Scans and optionally BitmapOr and BitmapAnd operations.\nBitmaps created by Bitmap Index Scans can be combined by BitmapAnd or BitmapOr operations into bitmaps which may contain rows matching more complicated conditions.\nBeing able to combine bitmaps with AND or OR operations mean that information from more than one index can be quickly aggregated together.\nIf the bitmap does not fit in memory, defined by\nwork_mem\n, Postgres will make some blocks\nlossy\n, but this is shown on the Bitmap Heap Scan.\nDue to implementation limitations, both BitmapAnd and BitmapOr nodes always report the number of rows they produce as 0, regardless of what it is.",
+  BitmapOr:
+    "Bitmap scans are a multi-step process that consist of a Bitmap Heap Scan, one or more Bitmap Index Scans and optionally BitmapOr and BitmapAnd operations.\nBitmaps created by Bitmap Index Scans can be combined by BitmapAnd or BitmapOr operations into bitmaps which may contain rows matching more complicated conditions.\nBeing able to combine bitmaps with AND or OR operations mean that information from more than one index can be quickly aggregated together.\nIf the bitmap does not fit in memory, defined by\nwork_mem\n, Postgres will make some blocks\nlossy\n, but this is shown on the Bitmap Heap Scan.\nDue to implementation limitations, both BitmapAnd and BitmapOr nodes always report the number of rows they produce as 0, regardless of what it is.",
+  "Custom Scan":
+    "Postgres allows extensions to add custom scan types to extend the ways in which it can read data.\nFrom the Postgres docs: “Typically, the motivation for writing a custom scan provider will be to allow the use of some optimization not supported by the core system, such as caching or some form of hardware acceleration.”",
+  "CTE Scan":
+    "CTE scans are generated by WITH statements.\nThey cause the operations in the subquery to be evaluated, and the results stored to be used later in the query, almost like a temporary table.\nIn versions of Postgres prior to v12, CTEs can prevent query plan optimisations, since the planner isn't aware of where and how the result of the CTE will be used. This can lead to suboptimal plans for CTEs, particularly those returning results which are only referred to once in the rest of the query.\nIf upgrading is not possible, inlining a subquery which is only used once can also improve the query speed.",
+  "Foreign Scan":
+    "Reads data from a remote data source.\nThis can be another PostgreSQL database, another RDBMS, a NoSQL database, or even a CSV file.\nIt is often possible for Postgres to “push down” or delegate operations to a remote database – for example aggregates, joins, predicates, and function execution. In order to do so sensibly, Postgres needs good statistics for the data source, which can be\npossible via ANALYZE\n.\nAs of PostgreSQL 14, these can now be run in parallel. You’ll see these as “Async Foreign Scan” nodes in TEXT format query plans.",
+  "Function Scan":
+    "Take the results of a set-returning function, and return them as if they were rows read from a table.\nPostgres considers functions to be volatile unless specified otherwise (immutable or stable), which can affect query planning.",
+  Gather:
+    "Gather nodes combine the output of child nodes, which are executed by parallel workers.\nThey do not make any guarantee about ordering, unlike Gather Merge nodes, which preserve sort order.",
+  "Gather Merge":
+    "Gather Merge nodes combine the output of child nodes, which are executed by parallel workers.\nThey consume sorted data, and preserve this sort order.",
+  Group: "Groups rows together for a GROUP BY operation.",
+  GroupAggregate:
+    "Aggregates pre-sorted rows for a GROUP BY operation.\nBecause it is handling sorted data, it only needs to keep the most recent group in memory. This is an important difference versus HashAggregate.\nIn non-text format query plans, you will see these as Aggregate operations.",
+  Hash: "Hashes rows for use by a parent operation, for example to perform a Hash Join.\nYour settings of\nwork_mem\nand\nhash_mem_multiplier\n(PostgreSQL 13+) determine how much memory is available to Postgres per Hash operation.",
+  HashAggregate:
+    "Aggregates rows for a GROUP BY operation using a hash table.\nUnlike a GroupAggregate node, it can handle unsorted data.\nThe hash table uses space for every entry, unlike GroupAggregate which only needs access to the latest group. This is an important distinction when working out whether the operation will fit in memory (defined by\nwork_mem\nand\nhash_mem_multiplier\n) or the system will need to write out data to disk, which often carries severe performance penalties.\nIn non-text format query plans, you will see these as Aggregate operations.",
+  HashSetOp:
+    "A strategy for set operations like INTERSECT or EXCEPT that uses Append to avoid needing pre-sorted input.\nThese appear as SetOp nodes, with a strategy of “Hashed”, in non-text-format query plans.\nUNION operations are handled by Append or MergeAppend.",
+  "Incremental Sort":
+    "Added in PostgreSQL 13, an Incremental Sort operation sorts the data by one column at a time.\nThis can speed things up, and save memory, when the rows arrive sorted by one (or more) of the required columns already.\nThis feature is gradually improving, for example window functions can make use of incremental sorts from version 14, and distinct can from version 16.",
+  Limit:
+    "Takes some rows and discards remaining ones, for example as part of a LIMIT or FETCH clause.",
+  LockRows:
+    "Lock the rows in question to block other queries from writing to them (reads are allowed).",
+  Materialize:
+    "Stores the result of the child operation in memory, to allow fast, repeated access to it by parent operations.\nYour setting of\nwork_mem\ndetermines how much memory is available to Postgres per materialize operation.",
+  Memoize:
+    "Memoize operations cache the results of lookups, avoiding the need to do them again.\nLess commonly looked up results may be evicted from the cache when more space is required for new entries.\nMemoize was added in PostgreSQL 14, for nested loop operations where enough duplicates are expected that caching is estimated to be cheaper.",
+  "Merge Append":
+    "Combines the sorted results of the child operations, in a way that preserves their sort order.\nCan be used for combining already-sorted rows from table partitions.",
+  MixedAggregate:
+    "Aggregates rows for GROUP BY operations using GROUPING SETS, CUBE, or ROLLUP.\nIn non-text format query plans, you will see these as Aggregate operations, with a strategy of Mixed.",
+  ModifyTable:
+    "Writes or deletes data in a table, for example from an INSERT, UPDATE, DELETE, or MERGE.\nThe operation timing reported includes that from any BEFORE\ntriggers\nfired.",
+  "Parallel Bitmap Heap Scan":
+    "In a Parallel Bitmap Heap Scan, Postgres uses multiple processes in parallel to execute the heap scan part of the bitmap scan.\nThe results of these are then combined in a Gather operation.\nParallel bitmap heap scans can be a fast way of getting a fair number of rows from large tables. However, fetching a small number of rows from a large table is normally far more efficient via a single index or index-only scan.\nIf you use both the ANALYZE and VERBOSE parameters of EXPLAIN, you’ll see per-worker statistics for parallel operations. The leader process details are not shown explicitly, but by default it also contributes to the work. Currently, the exact and lossy heap blocks are not correctly reported by PostgreSQL for parallel bitmap heap scans (only the leader details are reported), but\na patch\nhas been committed to fix this in PostgreSQL 18.",
+  "Parallel Index Scan":
+    "In a Parallel Index Scan, Postgres uses multiple processes to scan an index. However, the processes take turns reading data from the index, so they are often not a big win over non-parallel index scans.\nParallel index scans currently work only on b-tree indexes (the default).\nIf you use both the ANALYZE and VERBOSE parameters of EXPLAIN, you’ll see per-worker statistics for parallel operations. The leader process details are not shown explicitly, but by default it also contributes to the work.",
+  "Parallel Index-Only Scan":
+    "In a Parallel Index-Only Scan, Postgres uses multiple processes to scan an index. However, the processes take turns reading data from the index, so they are often not a big win over non-parallel index-only scans.\nParallel index-only scans currently work only on b-tree indexes.\nIf you use both the ANALYZE and VERBOSE parameters of EXPLAIN, you’ll see per-worker statistics for parallel operations. The leader process details are not shown explicitly, but by default it also contributes to the work.",
+  "Parallel Seq Scan":
+    "In a Parallel Seq Scan (or Parallel Sequential Scan) Postgres uses multiple processes in parallel to read rows from a table. Each process scans a section of the table, page by page sequentially, in the order they are on disk.\nThe results of these are then combined in a Gather operation.\nParallel sequential scans can be a fast way of getting a high proportion of the rows from large tables. However, fetching a small proportion of rows from a large table is normally far more efficient via an index.\nIf you use both the ANALYZE and VERBOSE parameters of EXPLAIN, you’ll see per-worker statistics for parallel operations. The leader process details are not shown explicitly, but by default it also contributes to the work.",
+  ProjectSet: "Executes set-returning functions.",
+  "Recursive Union":
+    "Take the union of all steps of a recursive function.\nUsually caused by a WITH RECURSIVE statement.",
+  Result:
+    "Result nodes return a value without a scan (like a hardcoded value).\nThey are also used to optimize queries with qualifications that do not depend on the scanned data.",
+  SetOp:
+    "A set operation like INTERSECT or EXCEPT.\nIn non-text-format query plans, a HashSetOp will appear as a SetOp with a strategy of “Hashed”.\nUNION operations are handled by Append or MergeAppend.",
+  Sort: "Sorts rows into an order, usually as a result of an ORDER BY clause.\nSorting lots of rows can be expensive in both time and memory. Your setting of\nwork_mem\ndetermines how much memory is available to Postgres per sort. If a sort requires more memory than\nwork_mem\npermits, it can be done in a slower way on disk.\nIf the sort is by a single column, or multiple columns from the same table, you may be able to avoid it entirely by adding an index with the desired order.\nAs of version 13, PostgreSQL also now has the option of doing an Incremental Sort, that can sort a subset of the columns in the Sort Key.",
+  "Subquery Scan": "Reads the result of a subquery.",
+  "TID Scan":
+    "A scan of a table by TupleID (ctid).\nThis is fast, but unreliable long-term, since the ctid of a row changes if the row is updated\n(or the table reorganized) —\ndocs\n.",
+  "TID Range Scan":
+    "In PostgreSQL 14 and newer, a TID Range Scan can efficiently scan a table using a TupleID (ctid) range.\nThis is fast, but unreliable long-term, since the ctid of a row changes if the row is updated\n(or the table reorganized) —\ndocs\n.\nFor example:",
+  Unique: "Removes duplicates from a sorted result set.",
+  "Values Scan": "Read in constants as part of a VALUES command.",
+  WindowAgg:
+    "WindowAgg nodes represent window functions, which are caused by OVER statements.",
+  "WorkTable Scan":
+    "Read in intermediate stages in an operation, usually a recursive operation declared using WITH RECURSIVE.",
+};

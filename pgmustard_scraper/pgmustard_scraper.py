@@ -13,6 +13,34 @@ cache_file_json = "pgmustard_fields.json"
 cache_file_ts = "pgmustard_fields.ts"
 
 
+def scrape_operation_descriptions():
+    result = {}
+
+    main_soup = get_soup(START_URL)
+    operations_by_category = extract_operation_links(main_soup)
+
+    for section, ops in operations_by_category.items():
+        for op_name, op_url in ops:
+            print(f"\n📘 Fetching operation: {op_name}")
+            try:
+                soup = get_soup(BASE_URL + op_url)
+                outer_div = soup.find("div", class_="row sqs-row")
+                if not outer_div:
+                    raise ValueError("Outer .row.sqs-row not found")
+
+                inner_div = outer_div.find("div", class_="row sqs-row")
+                if not inner_div:
+                    raise ValueError("Inner .row.sqs-row not found")
+
+                description_text = inner_div.get_text("\n", strip=True)
+                result[op_name] = description_text
+
+            except Exception as e:
+                print(f"⚠️ Skipped {op_name} due to error: {e}")
+
+    return result
+
+
 def get_soup(url: str) -> BeautifulSoup:
     print(f"Fetching: {url}")
     response = requests.get(url, headers=HEADERS)
@@ -49,6 +77,7 @@ def extract_field_links(op_url: str) -> list:
             break
     return fields
 
+
 def extract_field_description(field_url: str) -> str:
     soup = get_soup(BASE_URL + field_url)
 
@@ -66,7 +95,8 @@ def extract_field_description(field_url: str) -> str:
             break
 
     if h1_container_index is None:
-        raise ValueError("Couldn't find .sqs-html-content container for the <h1>")
+        raise ValueError(
+            "Couldn't find .sqs-html-content container for the <h1>")
 
     # Step 3: Look for the next .sqs-html-content div AFTER the h1 container
     for div in all_html_divs[h1_container_index + 1:]:
@@ -74,10 +104,8 @@ def extract_field_description(field_url: str) -> str:
         if text:  # Make sure it isn't empty
             return div.get_text("\n", strip=True)
 
-    raise ValueError("No description found in any .sqs-html-content after the <h1>")
-
-
-
+    raise ValueError(
+        "No description found in any .sqs-html-content after the <h1>")
 
 
 def scrape_pgmustard():
@@ -114,15 +142,25 @@ def write_json(data):
 def write_ts(data):
     with open(cache_file_ts, "w", encoding="utf-8") as f:
         f.write("// Auto-generated from pgMustard scraper\n")
-        f.write("export const pgMustardFields: Record<string, Record<string, string>> = ")
+        f.write(
+            "export const pgMustardFields: Record<string, Record<string, string>> = ")
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write(";\n")
     print(f"✅ Saved TS to {cache_file_ts}")
 
 
 if __name__ == "__main__":
-    print("🚀 Starting scrape...")
-    data = scrape_pgmustard()
+    print("🚀 Scraping pgMustard operation descriptions...")
+    data = scrape_operation_descriptions()
+
+    # Write output
     write_json(data)
-    write_ts(data)
+
+    with open(cache_file_ts, "w", encoding="utf-8") as f:
+        f.write("// Auto-generated operation descriptions from pgMustard\n")
+        f.write(
+            "export const pgMustardOperationDescriptions: Record<string, string> = ")
+        json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write(";\n")
+
     print("🏁 Done!")

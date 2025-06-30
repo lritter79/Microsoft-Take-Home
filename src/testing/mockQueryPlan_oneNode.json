@@ -1,0 +1,22 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Seq Scan",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Relation Name": "employee",
+      "Alias": "employee",
+      "Startup Cost": 0.0,
+      "Total Cost": 18.5,
+      "Plan Rows": 850,
+      "Plan Width": 68,
+      "Actual Startup Time": 0.003,
+      "Actual Total Time": 0.006,
+      "Actual Rows": 3,
+      "Actual Loops": 1
+    },
+    "Planning Time": 0.043,
+    "Triggers": [],
+    "Execution Time": 0.017
+  }
+]
