@@ -58,3 +58,130 @@ Add more testing, used chatgpt for some
 Add tooltips to show all the extra infor per node
 Consider showing more info in label
 See docs for tooltips https://reactflow.dev/learn/tutorials/getting-started-with-react-flow-components#adding-your-first-components
+Prompts used: "Make a simple tooltip react component that takes in a string as a parameter and shows a circled question mark that shows the string on hover. Ask me 5 clarifying questions before coding it out"
+"consider the following styles: ".node {
+  min-height: 50px;
+  border: 1px solid #eee;
+  padding: 5px;
+  border-radius: 5px;
+  background: white;
+}
+ 
+.node a {
+  display: block;
+  color: #777;
+  font-size: 12px;
+}" add styling for a hover effect and a class called "selected""
+"consider the following TS objects: "  const nodes = [
+    {
+      id: "1",
+      data: { label: "Hello" },
+      position: { x: 0, y: 0 },
+      type: "input",
+    },
+    {
+      id: "2",
+      data: { label: "World" },
+      position: { x: -100, y: 100 },
+    },
+    {
+      id: "3",
+      data: { label: "World" },
+      position: { x: -250, y: 200 },
+    },
+    {
+      id: "4",
+      data: { label: "World" },
+      position: { x: -100, y: 200 },
+    },
+  ];
+
+  const edges = [
+    { id: "1-2", source: "1", target: "2" },
+    { id: "2-3", source: "2", target: "3" },
+    { id: "2-4", source: "2", target: "4" },
+  ];"
+
+Now conisder the following json for a SQL EXPLAIN ANALYZE plan: "[
+  {
+    "Plan": {
+      "Node Type": "Sort",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 32.11,
+      "Total Cost": 32.82,
+      "Plan Rows": 283,
+      "Plan Width": 68,
+      "Actual Startup Time": 0.037,
+      "Actual Total Time": 0.041,
+      "Actual Rows": 2,
+      "Actual Loops": 1,
+      "Sort Key": ["dept", "name"],
+      "Sort Method": "quicksort",
+      "Sort Space Used": 25,
+      "Sort Space Type": "Memory",
+      "Plans": [
+        {
+          "Node Type": "Bitmap Heap Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Relation Name": "employee",
+          "Alias": "employee",
+          "Startup Cost": 6.34,
+          "Total Cost": 20.59,
+          "Plan Rows": 283,
+          "Plan Width": 68,
+          "Actual Startup Time": 0.008,
+          "Actual Total Time": 0.011,
+          "Actual Rows": 2,
+          "Actual Loops": 1,
+          "Recheck Cond": "(empid > 1)",
+          "Rows Removed by Index Recheck": 0,
+          "Filter": "(name ~~ '%a%'::text)",
+          "Rows Removed by Filter": 0,
+          "Exact Heap Blocks": 1,
+          "Lossy Heap Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Bitmap Index Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Index Name": "employee_pkey",
+              "Startup Cost": 0.0,
+              "Total Cost": 6.27,
+              "Plan Rows": 283,
+              "Plan Width": 0,
+              "Actual Startup Time": 0.002,
+              "Actual Total Time": 0.003,
+              "Actual Rows": 2,
+              "Actual Loops": 1,
+              "Index Cond": "(empid > 1)"
+            }
+          ]
+        }
+      ]
+    },
+    "Planning Time": 0.997,
+    "Triggers": [],
+    "Execution Time": 0.064
+  }
+]" Write a function that takes the plan and its child nodes and returns edges and nodes similar to the ts objects from before. ask my 5 questions before writing the fxn"
+"Write a component that takes in an array of the following b=object and displays the data by the keys in a logical way: "/**
+ * This type represents a trigger in a PostgreSQL query plan.
+ * A trigger is an event that occurs in the database, such as a row being inserted,
+ * updated, or deleted. It includes the name of the trigger, the relation it is associated
+ * with, the time it was triggered, and the number of calls made to it.
+ * Triggers can be used to perform actions automatically in response to certain events,
+ * such as logging changes, enforcing constraints, or updating related data.
+ */
+export type Trigger = {
+  "Trigger Name": string;
+  Relation: string;
+  Time: number;
+  Calls: number;
+};"
+Design decisions: 
+
+I decided to use a tree strucutre because 1. exisitng postgres visualizer tools did the same and 2. The plan follows a tree structure with nodes that branch off and have leaves and it seemed like a logical choice. Instead of trying to code a tree diagram from scratch, I searched for existing visualization libraries for that use case. React Flow was by far the best and it had excellent documentation so I chose it to represent to the Query Plan. I decided to make the webscraper to fetch the copy text describing what the operation were actually doing, and what the data returned on each node meant because I thought it would contribute to the user understanding what the plan means in plain english. To me, a series of toolbars and tooltips was the best way to convey the information on demand without crowding the UI. 

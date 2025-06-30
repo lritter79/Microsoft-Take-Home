@@ -38,8 +38,6 @@ const JsonInput: React.FC<JsonInputProps> = ({ onValidJson }) => {
           onValidJson(parsed[0] as PlanHead);
         }
       }
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       const errorMessage =
         err && typeof err === "object" && "message" in err

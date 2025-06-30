@@ -3,12 +3,11 @@ import { Handle, Position, NodeToolbar } from "@xyflow/react";
 import styles from "./CustomNode.module.css";
 import { pgMustardFields } from "../../../constants/pgmustard_fields";
 import type { Operation } from "../../../types/operation";
-import Tooltip from "../../Tooltip/Tooltip";
+import Tooltip from "../Tooltip/Tooltip";
 import { pgMustardOperationDescriptions } from "../../../constants/pgmustard_operation_descriptions";
 
 type CustomNodeData = {
   label: string;
-  // Add the correct type for position if needed, e.g.:
   stats: Record<string, string | number>;
 };
 
@@ -19,6 +18,8 @@ const CustomNode = ({
   data: CustomNodeData;
   selected: boolean;
 }) => {
+  const fields =
+    pgMustardFields[data.stats["Node Type"] as Operation] || {};
   return (
     <>
       <NodeToolbar
@@ -52,18 +53,7 @@ const CustomNode = ({
             )}
             {key !== "Node Type" && (
               <>
-                {data.stats["Node Type"] in pgMustardFields &&
-                  (pgMustardFields[
-                    data.stats["Node Type"] as Operation
-                  ][key] ? (
-                    <Tooltip
-                      text={
-                        pgMustardFields[
-                          data.stats["Node Type"] as Operation
-                        ][key]
-                      }
-                    />
-                  ) : null)}
+                {fields[key] ? <Tooltip text={fields[key]} /> : null}
               </>
             )}{" "}
           </div>
