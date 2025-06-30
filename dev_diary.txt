@@ -46,3 +46,5 @@ time of upper level node inclused the times of of all its child nodes
 NB the cost does not consider time spent transmitting result rows to the client 
 
 width of a row is the sum of all the bytes of all the columns
+
+Jun 29
