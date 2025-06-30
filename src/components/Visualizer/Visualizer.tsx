@@ -6,7 +6,7 @@ import {
   type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import CustomNode from "./CustomMode/CustomNode";
+import CustomNode from "./CustomNode/CustomNode";
 
 const nodeTypes = {
   tooltip: CustomNode,
