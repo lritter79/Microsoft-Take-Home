@@ -48,3 +48,13 @@ NB the cost does not consider time spent transmitting result rows to the client
 width of a row is the sum of all the bytes of all the columns
 
 Jun 29
+Got chatgpt to write webscraper to get definitions for operations and definitions for all fields on an operation as returned
+Used scraper to populate a record type with descriptions for later
+used copilot to revise validation for textarea input
+Found react flow for creating tree diagram: https://reactflow.dev/learn/customization/custom-nodes
+Used Chaptgpt to make function for generating nodes and edges from plan nodes to use for the diagram
+To dos 
+Add more testing, used chatgpt for some 
+Add tooltips to show all the extra infor per node
+Consider showing more info in label
+See docs for tooltips https://reactflow.dev/learn/tutorials/getting-started-with-react-flow-components#adding-your-first-components

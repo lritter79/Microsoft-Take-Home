@@ -26,8 +26,21 @@ const App = () => {
     <div style={{ height: "100vh" }}>
       <h1>PostgreSQL EXPLAIN Visualizer</h1>
       <JsonInput onValidJson={handleValidJson} />
-      {JSON.stringify(queryPlan, null, 2) && (
-        <Visualizer nodes={nodes} edges={edges} />
+      {queryPlan && (
+        <>
+          <h2>Query Plan</h2>
+          <pre style={{ whiteSpace: "pre-wrap" }}>
+            Planning Time: {queryPlan["Planning Time"]} ms
+            <br />
+            Execution Time: {queryPlan["Execution Time"]} ms
+          </pre>
+        </>
+      )}
+      {nodes.length > 0 && (
+        <>
+          <h2>Query Plan Visualization</h2>{" "}
+          <Visualizer nodes={nodes} edges={edges} />
+        </>
       )}
     </div>
   );
