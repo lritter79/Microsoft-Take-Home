@@ -34,7 +34,7 @@ const App = () => {
       <JsonInput onValidJson={handleValidJson} />
       {queryPlan && (
         <>
-          <h2>Query Plan</h2>
+          <h2>Query Plan Data</h2>
           <pre style={{ whiteSpace: "pre-wrap" }}>
             Planning Time: {queryPlan["Planning Time"]} ms
             <br />

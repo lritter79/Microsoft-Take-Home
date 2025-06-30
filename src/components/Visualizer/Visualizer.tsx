@@ -2,6 +2,7 @@ import {
   Background,
   Controls,
   ReactFlow,
+  useNodesState,
   type Edge,
   type Node,
 } from "@xyflow/react";
@@ -16,10 +17,13 @@ const Visualizer: React.FC<{
   nodes: Node[];
   edges: Edge[];
 }> = ({ nodes, edges }) => {
+  const [flowNodes, , onNodesChange] = useNodesState(nodes);
+
   return (
     <div style={{ height: "75vh", backgroundColor: "white" }}>
       <ReactFlow
-        nodes={nodes}
+        nodes={flowNodes}
+        onNodesChange={onNodesChange}
         colorMode="dark"
         edges={edges}
         nodeTypes={nodeTypes}

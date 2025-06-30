@@ -1,13 +1,27 @@
 .node {
-  height: 50px;
-  border: 1px solid #eee;
+  border: 1px solid #ccc;
   padding: 5px;
   border-radius: 5px;
   background: white;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
- 
-.node label {
+
+.node:not(.selected):hover {
+  background: #e6e6e6;
+  border-color: #666;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+
+.selected {
+  background: #d0e3ff;
+  border-color: #003d99;
+  box-shadow: 0 0 6px rgba(0, 61, 153, 0.6);
+}
+
+.node a {
   display: block;
-  color: #777;
+  color: #333;
   font-size: 12px;
 }
