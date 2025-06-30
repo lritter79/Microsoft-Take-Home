@@ -1,5 +1,5 @@
 import type { IPlanNode } from "../types/planNode";
-import type { Node, Edge } from "@xyflow/react";
+import { type Node, type Edge, Position } from "@xyflow/react";
 
 export function generateFlowElementsFromPlan(plan: IPlanNode) {
   const nodes: Node[] = [];
@@ -16,7 +16,8 @@ export function generateFlowElementsFromPlan(plan: IPlanNode) {
   function traverse(
     node: IPlanNode,
     depth: number,
-    offsetX: number
+    offsetX: number,
+    isFirstChild: boolean
   ): { id: string; width: number; centerX: number } {
     const currentId = `node-${nodeCounter++}`;
     const { Plans, ...nodeData } = node;
@@ -28,12 +29,19 @@ export function generateFlowElementsFromPlan(plan: IPlanNode) {
 
     if (Plans && Plans.length > 0) {
       let childOffsetX = offsetX;
-      for (const child of Plans) {
+
+      for (let i = 0; i <= Plans.length - 1; i++) {
+        const child = Plans[i];
         const {
           id: childId,
           width: childWidth,
           centerX: childCenterX,
-        } = traverse(child, depth + 1, childOffsetX);
+        } = traverse(
+          child,
+          depth + 1,
+          childOffsetX,
+          (isFirstChild = i === 0)
+        );
         subtreeWidth += childWidth;
         childCenters.push(childCenterX);
         childIds.push(childId);
@@ -53,9 +61,13 @@ export function generateFlowElementsFromPlan(plan: IPlanNode) {
     // Add the current node
     nodes.push({
       id: currentId,
+      type: "tooltip", // Assuming 'tooltip' is the custom node type
       data: {
         label: node["Node Type"],
-        ...nodeData,
+        position: isFirstChild ? Position.Right : Position.Left, // Position based on whether it's the first child
+        stats: {
+          ...nodeData,
+        },
       },
       position: {
         x: centerX,
@@ -75,7 +87,7 @@ export function generateFlowElementsFromPlan(plan: IPlanNode) {
     return { id: currentId, width: subtreeWidth, centerX };
   }
 
-  traverse(plan, 0, 0);
+  traverse(plan, 0, 0, true);
 
   return { nodes, edges };
 }

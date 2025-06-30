@@ -20,6 +20,12 @@ const App = () => {
     setQueryPlan(parsed);
     setNodes(plansAsNodesAndEdges.nodes);
     setEdges(plansAsNodesAndEdges.edges);
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 100);
   };
 
   return (
