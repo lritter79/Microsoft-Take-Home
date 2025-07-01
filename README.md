@@ -12,8 +12,8 @@ I decided to use a tree structure visualization because I thought it best encaps
 
 # Process
 
-Before coding, I read some articles, documentation, and watched some videos about the PostgreSQL EXPLAIN ANALYZE command. Then I brainstormed what a user might want to get out of a query plan visualizer.
-I started out by just using the Vite CLI to scaffold the React project. Next, I used ChatGPT to write some base components, validation logic, and the algorithm for extracting nodes and edges from a query plan. I also used it to write a webscraper to scrape the pgmustard site for explanations for each metric and operation. I followed along with the React Flow docs to create the custom nodes and toolbars. I also used Copilot for writing some documentation, TS types, and some make some minor revisions and autocorrection while coding.
+Before coding, I read the PostgreSQL docs, and watched some videos about the PostgreSQL EXPLAIN ANALYZE command. Then I brainstormed what a user might want to get out of a query plan visualizer.
+I started out by just using the Vite CLI to scaffold the React project. Next, I used ChatGPT to write some base components, validation logic, and the algorithm for extracting nodes and edges from a query plan. I also used it to write a webscraper to scrape the pgmustard site for explanations for each metric and operation. I followed along with the React Flow docs to create the custom nodes and toolbars. I also used Copilot for writing documentation and TS types, as well as making minor revisions and autocorrection while coding.
 
 # ChatGPT Prompt Examples
 
